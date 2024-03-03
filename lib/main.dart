@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 // Import for Android features.
 
 import 'webview_controller.dart';
@@ -21,7 +20,22 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const PageHome(),
+    );
+  }
+}
+
+class PageHome extends StatelessWidget {
+  const PageHome({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: ElevatedButton(
+          onPressed: () {
+            Get.to(() => const MyHomePage(title: 'Flutter Demo Home Page'));
+          },
+          child: const Text('Next')),
     );
   }
 }
@@ -67,6 +81,15 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Obx(
         () => ListView(
           children: [
+            Text(
+              _webViewController.moTa.value,
+              maxLines: 2,
+            ),
+            Wrap(
+              children: _webViewController.theLoai.entries
+                  .map((e) => Text(e.value))
+                  .toList(),
+            ),
             ButtonIndexing(
               wvController: _webViewController,
             ),
@@ -108,18 +131,20 @@ class ButtonIndexing extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() => Wrap(
         children: wvController.chiMuc.entries
-            .map((e) => ElevatedButton(
-                onPressed: () {
-                  print(e.value);
-                  wvController.selectChiMuc(stChimuc: e.key);
-                },
-                child: Text(
-                  e.key,
-                  style: TextStyle(
-                      color: e.value.compareTo('active') == 0
-                          ? Colors.red
-                          : Colors.black),
-                )))
+            .map((e) => SizedBox(
+                  height: 40,
+                  child: ElevatedButton(
+                      onPressed: () {
+                        wvController.selectChiMuc(stChimuc: e.key);
+                      },
+                      child: Text(
+                        e.key,
+                        style: TextStyle(
+                            color: 'active'.compareTo(e.value.trim()) == 0
+                                ? Colors.red
+                                : Colors.black),
+                      )),
+                ))
             .toList()));
   }
 }

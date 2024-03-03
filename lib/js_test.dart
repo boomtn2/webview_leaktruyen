@@ -1,5 +1,5 @@
 String jsLeakChiMuc() {
-  return '''     
+  return '''
 // Lặp qua từng phần tử <li> và trích xuất thông tin
 var liElements = document.querySelectorAll('div.volume-list ul.pagination li');
 
@@ -36,7 +36,7 @@ var jsonData = JSON.stringify(paginationData);
  ''';
 }
 
-String jsChapter = ''' 
+String jsChapter = '''
 var liElements = document.querySelectorAll('li.chapter-name');
 
 // Tạo một mảng để chứa thông tin của các phần tử <li>
@@ -67,7 +67,7 @@ var jsonData = JSON.stringify(liData);
 jsonData;
 ''';
 
-String actionNext = ''' 
+String actionNext = '''
 var father = document.querySelector('ul.pagination');
 var aElements = father.querySelectorAll('a[data-action="loadBookIndex"]');
         aElements.forEach(function(aElement) {
@@ -75,4 +75,46 @@ var aElements = father.querySelectorAll('a[data-action="loadBookIndex"]');
             aElement.click();
           }
         });
+''';
+
+String textMoTa = '''
+document.querySelector('div.book-desc-detail').textContent;
+''';
+
+String theLoaiJS = '''
+var liElement = document.querySelector('.book-desc p');
+
+// Tạo một mảng để chứa thông tin của các phần tử <li>
+var liData = [];
+
+// Lặp qua từng phần tử <li> và trích xuất thông tin
+
+    var anchorElement = liElement.querySelectorAll('a');
+anchorElement.forEach(function(liElement) {
+    // Kiểm tra xem phần tử <a> có tồn tại không
+    if (anchorElement) {
+        var href = liElement.getAttribute('href');
+        var textContent = liElement.textContent.trim();
+
+        // Tạo một đối tượng chứa thông tin của mỗi phần tử <li>
+        var liItem = {
+            "href": href,
+            "textContent": textContent
+        };
+
+        // Thêm đối tượng vào mảng
+        liData.push(liItem);
+    }
+});
+
+// Chuyển đổi mảng thành JSON
+var jsonData = JSON.stringify(liData);
+jsonData;
+''';
+
+String tatHML = '''
+var allElements = document.querySelectorAll('*');
+allElements.forEach(function(element) {
+    element.style.display = 'none';
+});
 ''';

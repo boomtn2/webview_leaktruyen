@@ -7,33 +7,33 @@ import 'js_test.dart';
 
 class WVController extends GetxController {
   RxBool loading = false.obs;
-
+  //key: chiMuc value: class
   Map<String, String> chiMuc = <String, String>{}.obs;
-
+  // key: link value: text
   Map<String, String> listChuong = <String, String>{}.obs;
-
+  // key: link value: text
+  Map<String, String> theLoai = <String, String>{}.obs;
   final WebViewController controller = WebViewController();
-
+  RxString moTa = ''.obs;
   void loadRequest() {
     controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(
         NavigationDelegate(
-          onProgress: (int progress) {
-            print('onProgress');
-          },
           onPageStarted: (String url) {
-            print('onPageStarted');
             loading.value = true;
           },
           onPageFinished: (String url) {
             loading.value = false;
             loadChapter();
             loadJS();
+
+            if (moTa.value.isEmpty) {
+              moTaFCT();
+              theLoaiFCT();
+            }
           },
-          onWebResourceError: (WebResourceError error) {
-            print(error);
-          },
+          onWebResourceError: (WebResourceError error) {},
         ),
       )
       ..loadRequest(Uri.parse(
@@ -89,8 +89,38 @@ class WVController extends GetxController {
   void selectChiMuc({required String stChimuc}) async {
     try {
       String querry = actionNext.replaceAll('?', stChimuc);
-
+      loading.value = true;
       await controller.runJavaScript(querry);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void moTaFCT() async {
+    try {
+      final jsonString =
+          await controller.runJavaScriptReturningResult(textMoTa) as String;
+      moTa.value = jsonString;
+    } catch (e) {}
+  }
+
+  void theLoaiFCT() async {
+    try {
+      final jsonString =
+          await controller.runJavaScriptReturningResult(theLoaiJS);
+
+      final data = jsonDecode('$jsonString');
+      List<dynamic> jsonList =
+          jsonDecode(data); // Phân tích chuỗi JSON thành một danh sách Dart
+      Map<String, String> mapData = {};
+      // Lặp qua từng phần tử trong danh sách JSON và chuyển đổi thành Map<String, String>
+      for (var element in jsonList) {
+        String key = element['href'];
+        String value = element['textContent'];
+        mapData.addAll({key: value});
+      }
+      theLoai.clear();
+      theLoai.addAll(mapData);
     } catch (e) {
       print(e);
     }
